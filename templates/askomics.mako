@@ -1,36 +1,33 @@
 <%namespace name="ie" file="ie.mako" />
 <%
+import random
+import string
 # Sets ID and sets up a lot of other variables
 ie_request.load_deploy_config()
 
-# Define a volume that will be mounted into the container.
-# This is a useful way to provide access to large files in the container,
-# if the user knows ahead of time that they will need it.
-## user_file = ie_request.volume(
-##     hda.file_name, '/import/file.dat', how='ro')
-
-user_file = ie_request.volume(
-    '/home/imx/Workspace/galaxy/database/files/000', '/mounted/upload/Galaxy', how='ro')
-
 # Get a random API key
-import random
-import string
 askomics_api_key = ''.join([random.choice(string.ascii_letters + string.digits) for n in xrange(20)])
+
+# Get ids of selected datasets
+additional_ids = trans.request.params.get('additional_dataset_ids', None)
+if not additional_ids:
+    additional_ids = str(trans.security.encode_id( hda.id ) )
+else:
+    additional_ids += "," + trans.security.encode_id( hda.id )
 
 # Launch the IE. This builds and runs the docker command in the background.
 ie_request.launch(
-    volumes=[user_file],
+    additional_ids=additional_ids if ie_request.use_volumes else None,
     env_override={
         'ASKOMICS_LOAD_URL': 'http://localhost:6543',
-        'ASKOMICS_ALLOWED_UPLOAD': 'false',
-        'ASKOMICS_FILES_DIR': '/mounted',
-        'ASKOMICS_API_KEY': askomics_api_key
+        'ASKOMICS_API_KEY': askomics_api_key,
+        'ASKOMICS_FILES_DIR': '/tmp/askomics-ie'
     }
 )
 
 # Only once the container is launched can we template our URLs. The ie_request
 # doesn't have all of the information needed until the container is running.
-url = ie_request.url_template('${PROXY_URL}/login_api_url?key=' + askomics_api_key)
+url = ie_request.url_template('${PROXY_URL}/login_api_gie?key=' + askomics_api_key)
 %>
 <html>
 <head>
