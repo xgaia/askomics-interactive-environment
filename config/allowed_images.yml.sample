@@ -7,6 +7,6 @@
 ---
 -
     # image: askomics/docker-askomics:latest
-    image: askomics-ie
+    image: xgaia/askomics-ie
     description: |
         AskOmics, Visual SPARQL Query builder
