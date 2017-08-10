@@ -19,9 +19,11 @@ else:
 ie_request.launch(
     additional_ids=additional_ids if ie_request.use_volumes else None,
     env_override={
-        'ASKOMICS_LOAD_URL': 'http://localhost:6543',
+        'ASKO_load_url': 'http://localhost:6543',
         'ASKOMICS_API_KEY': askomics_api_key,
-        'ASKOMICS_FILES_DIR': '/tmp/askomics-ie'
+        'ASKO_files_dir': '/tmp/askomics-ie',
+        'VIRT_Parameters_NumberOfBuffers': 1360000, # This environment variables can't be taken in account (https://github.com/galaxyproject/galaxy/issues/4402)
+        'VIRT_Parameters_MaxDirtyBuffers': 1000000  # This environment variables can't be taken in account (https://github.com/galaxyproject/galaxy/issues/4402)
     }
 )
 

@@ -6,7 +6,6 @@
 # appropriate `apt-get/pip install` statements.
 ---
 -
-    # image: askomics/docker-askomics:latest
     image: xgaia/askomics-ie
     description: |
         AskOmics, Visual SPARQL Query builder
